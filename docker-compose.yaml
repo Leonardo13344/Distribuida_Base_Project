@@ -1,0 +1,7 @@
+services:
+  personas-service:
+    image: okteto.dev/app-personas:1.0.0
+    expose:
+      - 8080
+    ports:
+      - "8080:8080"
