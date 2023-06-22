@@ -1,14 +1,16 @@
-package com.distribuida;
+package com.distribuida.rest;
 
 import com.distribuida.db.Persona;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import com.distribuida.rep.PersonaRepository;
+import io.lettuce.core.RedisClient;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.Optional;
 
 class Message{
 
@@ -22,23 +24,26 @@ class Message{
         this.msg = msg;
     }
 }
-@Path("/personas")
-public class GreetingResource implements PanacheRepository<Persona> {
+@Path("/persona")
+public class PersonaRest{
 
-    private List<Persona> personas = Persona.listAll();
+    @Inject
+    PersonaRepository rep;
 
-    @Path("/listar")
+//    private List<Persona> personas = Persona.listAll();
+
+    @Path("/personas")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Persona> hello(){
-        return listAll();
+        return rep.listAll();
     }
 
     @GET
-    @Path("/buscar/{id}")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Persona getPersonaById(@PathParam("id") Long id){
-        return findById(id);
+    public Optional<Persona> getPersonaById(@PathParam("id") Long id){
+        return rep.findByIdOptionalCache(id);
     }
 
     @POST
@@ -46,17 +51,17 @@ public class GreetingResource implements PanacheRepository<Persona> {
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public Persona createPersona(Persona p){
-        persist(p);
+        rep.persist(p);
         return p;
     }
 
     @PUT
-    @Path("/crear/{id}")
+    @Path("/{id}")
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Persona updatePersona(@PathParam("id")Long id, String name){
-        Persona p = findById(id);
+        Persona p = rep.findById(id);
         if(p != null){
             p.setName(name);
             return p;
@@ -66,17 +71,20 @@ public class GreetingResource implements PanacheRepository<Persona> {
     }
 
     @DELETE
-    @Path("/eliminar/{id}")
+    @Path("/{id}")
     @Transactional
     public String deletePersona(@PathParam("id")Long id){
-        Persona p = findById(id);
+        Persona p = rep.findById(id);
         if(p != null){
-            delete(p);
+            rep.delete(p);
             return "Persona Eliminada";
         }else{
             throw new NotFoundException("Persona no Encontrada");
         }
     }
+
+    //Cache de Redis
+
 
 
 

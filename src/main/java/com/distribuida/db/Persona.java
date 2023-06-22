@@ -7,10 +7,10 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "person")
 @SequenceGenerator(name="personaSeq", sequenceName = "persona_seq", allocationSize = 1)
-public class Persona extends PanacheEntity {
+public class Persona  {
 
 //    @Id
-
+    @Id
     private Long id;
 
     @Column
