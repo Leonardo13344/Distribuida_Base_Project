@@ -37,4 +37,12 @@ public class Persona  {
     public void setId(Long id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Persona{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

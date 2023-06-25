@@ -19,6 +19,7 @@ dependencies {
     implementation("io.quarkus:quarkus-hibernate-orm")
     implementation("io.quarkus:quarkus-hibernate-orm-panache")
     implementation("io.quarkus:quarkus-config-yaml")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("io.lettuce:lettuce-core:6.2.4.RELEASE")
 }
 
